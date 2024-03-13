@@ -1,6 +1,6 @@
 # submission_flutter_fundamental
 
-A new Flutter project.
+Submission Restaurant App for Flutter Fundamental Class Dicoding Academy
 
 ## Getting Started
 
