@@ -1,5 +1,6 @@
 import 'package:dicoding_submission_flutter_fundamental/constant/name_router.dart';
 import 'package:dicoding_submission_flutter_fundamental/data/model/restaurant.dart';
+import 'package:dicoding_submission_flutter_fundamental/presentation/widget/card_menu_restaurant.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -26,6 +27,10 @@ class DetailPage extends StatelessWidget {
               width: double.infinity,
               height: 200,
               fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => const SizedBox(
+                height: 220,
+                child: Center(child: Icon(Icons.broken_image, size: 40)),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -82,30 +87,6 @@ class DetailPage extends StatelessWidget {
             SizedBox(height: 24),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class MenuCard extends StatelessWidget {
-  const MenuCard({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        color: Colors.grey[200],
-      ),
-      child: Column(
-        children: [
-          Icon(Icons.fastfood, size: 40),
-          SizedBox(height: 8),
-          Text('Menu', style: TextStyle(fontWeight: FontWeight.bold)),
-          SizedBox(height: 4),
-          Text('IDR 15.000'),
-        ],
       ),
     );
   }

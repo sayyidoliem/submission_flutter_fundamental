@@ -15,21 +15,21 @@ class ApiService {
     }
   }
 
-  Future<RestaurantResponse> getDetailRestaurant(int id) async {
+  Future<RestaurantResponse> getDetailRestaurant(String id) async {
     final response = await http.get(Uri.parse('$_baseUrl/detail/$id'));
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       return RestaurantResponse.fromJson(jsonDecode(response.body));
-    } else{
+    } else {
       throw Exception('Failed to load restaurant detail list');
     }
   }
 
   Future<RestaurantResponse> searchRestaurant(String value) async {
     final response = await http.get(Uri.parse('$_baseUrl/search?q=$value'));
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       return RestaurantResponse.fromJson(jsonDecode(response.body));
-    } else{
-      throw Exception('Failed to load restaurant detail list');
+    } else {
+      throw Exception('Failed to load restaurant search result');
     }
   }
 }

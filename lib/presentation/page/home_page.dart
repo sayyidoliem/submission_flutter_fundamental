@@ -1,8 +1,9 @@
-import 'package:dicoding_submission_flutter_fundamental/constant/name_router.dart';
-import 'package:dicoding_submission_flutter_fundamental/data/api/api_service.dart';
-import 'package:dicoding_submission_flutter_fundamental/data/model/restaurant_response.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:dicoding_submission_flutter_fundamental/presentation/provider/restaurant_provider.dart';
+import 'package:dicoding_submission_flutter_fundamental/presentation/provider/network_state.dart';
+import 'package:dicoding_submission_flutter_fundamental/presentation/widget/list_tile_restaurant.dart';
+import 'package:dicoding_submission_flutter_fundamental/data/model/restaurant_response.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -12,59 +13,106 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late Future<RestaurantResponse> _futureRestaurantResponse;
+  final TextEditingController _searchController = TextEditingController();
+  bool _isSearching = false;
 
   @override
   void initState() {
     super.initState();
-    _futureRestaurantResponse = ApiService().getRestaurantList();
+    Future.microtask(
+      () => context.read<RestaurantProvider>().fetchRestaurants(),
+    );
+  }
+
+  void _onSearch(String query) {
+    if (query.isEmpty) {
+      setState(() => _isSearching = false);
+      context.read<RestaurantProvider>().fetchRestaurants();
+    } else {
+      setState(() => _isSearching = true);
+      context.read<RestaurantProvider>().searchRestaurants(query);
+    }
+  }
+
+  void _clearSearch() {
+    _searchController.clear();
+    _onSearch('');
   }
 
   @override
   Widget build(BuildContext context) {
+    final provider = context.watch<RestaurantProvider>();
+    final NetworkState<RestaurantResponse> state;
+    if (_isSearching) {
+      state = provider.searchState;
+    } else {
+      state = provider.listState;
+    }
+
     return Scaffold(
-      body: FutureBuilder(
-        future: _futureRestaurantResponse,
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.waiting:
-              Future.delayed(Duration(seconds: 5));
-              return const Center(child: CircularProgressIndicator());
-            case ConnectionState.done:
-              if (snapshot.hasError) {
-                return Center(child: Text(snapshot.error.toString()));
-              }
-              final resultListRestaurant = snapshot.data!.restaurants;
-              return ListView.separated(
-                itemBuilder: (context, index) {
-                  final dataResult = resultListRestaurant[index];
-                  return ListTile(
-                    leading: SizedBox(
-                      width: 60,
-                      height: 60,
-                      child: Image.network(
-                        'https://restaurant-api.dicoding.dev/images/small/${dataResult.pictureId}',
+      appBar: AppBar(title: const Text('Restaurant, recommend for you')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            SearchBar(
+              controller: _searchController,
+              hintText: 'Seacrg restaurant...',
+              leading: IconButton(
+                icon: const Icon(Icons.search),
+                onPressed: () {},
+              ),
+              trailing: [
+                if (_searchController.text.isNotEmpty)
+                  IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () => _clearSearch(),
+                  ),
+              ],
+              onSubmitted: _onSearch,
+              onChanged: (value) {
+                if (value.isEmpty) {
+                  _clearSearch();
+                }
+              },
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: switch (state) {
+                Loading<RestaurantResponse>() => const Center(
+                  child: CircularProgressIndicator(),
+                ),
+                Failure<RestaurantResponse>(message: final message) => Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(message),
+                      const SizedBox(height: 12),
+                      ElevatedButton(
+                        onPressed: () => _onSearch(_searchController.text),
+                        child: const Text('Try again'),
                       ),
-                    ),
-                    title: Text('${dataResult.name} | Kota ${dataResult.city}'),
-                    subtitle: Text(
-                      dataResult.description,
-                      maxLines: 1,
-                      overflow: TextOverflow.clip,
-                    ),
-                    trailing: Text(dataResult.rating.toString()),
-                    onTap: () {
-                      context.goNamed(DETAIL_PAGE_ROUTE, extra: dataResult);
-                    },
-                  );
-                },
-                separatorBuilder: (context, index) => Divider(),
-                itemCount: resultListRestaurant.length,
-              );
-            default:
-              return SizedBox();
-          }
-        },
+                    ],
+                  ),
+                ),
+                Success<RestaurantResponse>(data: final result) =>
+                  result.restaurants.isEmpty
+                      ? const Center(
+                          child: Text('Tidak ada restoran ditemukan.'),
+                        )
+                      : ListView.separated(
+                          itemCount: result.restaurants.length,
+                          separatorBuilder: (context, index) =>
+                              const Divider(height: 1),
+                          itemBuilder: (context, index) => ListTileRestaurant(
+                            dataResult: result.restaurants[index],
+                          ),
+                        ),
+                _ => const SizedBox.shrink(),
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

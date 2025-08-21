@@ -1,16 +1,18 @@
 import 'dart:convert';
-import 'package:dicoding_submission_flutter_fundamental/data/model/restaurant.dart';
+import 'restaurant.dart';
 
 class RestaurantResponse {
   final bool error;
   final String message;
-  final int count;
+  final int? count;
+  final int? founded;
   final List<Restaurant> restaurants;
 
   RestaurantResponse({
     required this.error,
     required this.message,
     required this.count,
+    required this.founded,
     required this.restaurants,
   });
 
@@ -22,8 +24,9 @@ class RestaurantResponse {
   factory RestaurantResponse.fromJson(Map<String, dynamic> json) =>
       RestaurantResponse(
         error: json["error"],
-        message: json["message"],
+        message: json["message"] ?? '',
         count: json["count"],
+        founded: json["founded"],
         restaurants: List<Restaurant>.from(
           json["restaurants"].map((x) => Restaurant.fromJson(x)),
         ),
@@ -33,6 +36,7 @@ class RestaurantResponse {
     "error": error,
     "message": message,
     "count": count,
-    "restaurants": List<Restaurant>.from(restaurants.map((x) => x.toJson())),
+    "founded": founded,
+    "restaurants": List<dynamic>.from(restaurants.map((x) => x.toJson())),
   };
 }

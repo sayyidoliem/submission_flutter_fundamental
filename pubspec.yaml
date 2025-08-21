@@ -1,6 +1,6 @@
 name: dicoding_submission_flutter_fundamental
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
@@ -10,7 +10,9 @@ dependencies:
   flutter:
     sdk: flutter
   go_router: ^16.2.0
+  google_fonts: ^6.3.0
   http: ^1.5.0
+  provider: ^6.1.5+1
 
 dev_dependencies:
   flutter_lints: ^5.0.0
