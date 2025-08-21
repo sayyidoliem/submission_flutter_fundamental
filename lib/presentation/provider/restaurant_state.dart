@@ -1,0 +1,1 @@
+enum RestaurantState { loading, loaded, empty, error }
