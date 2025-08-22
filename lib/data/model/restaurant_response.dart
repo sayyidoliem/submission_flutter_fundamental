@@ -21,16 +21,34 @@ class RestaurantResponse {
 
   String toRawJson() => json.encode(toJson());
 
-  factory RestaurantResponse.fromJson(Map<String, dynamic> json) =>
-      RestaurantResponse(
-        error: json["error"],
-        message: json["message"] ?? '',
-        count: json["count"],
-        founded: json["founded"],
-        restaurants: List<Restaurant>.from(
-          json["restaurants"].map((x) => Restaurant.fromJson(x)),
-        ),
-      );
+  factory RestaurantResponse.fromJson(Map<String, dynamic> json) {
+    final bool error = json['error'] ?? false;
+    final String message = json['message'] ?? '';
+    final int? count = json['count'];
+    final int? founded = json['founded'];
+
+    List<Restaurant> restaurants = <Restaurant>[];
+
+    if (json['restaurants'] is List) {
+      restaurants = (json['restaurants'] as List)
+          .map((x) => Restaurant.fromJson(x as Map<String, dynamic>))
+          .toList();
+    } else if (json['restaurant'] != null) {
+      restaurants = [
+        Restaurant.fromJson(json['restaurant'] as Map<String, dynamic>),
+      ];
+    } else {
+      restaurants = <Restaurant>[];
+    }
+
+    return RestaurantResponse(
+      error: error,
+      message: message,
+      count: count,
+      founded: founded,
+      restaurants: restaurants,
+    );
+  }
 
   Map<String, dynamic> toJson() => {
     "error": error,

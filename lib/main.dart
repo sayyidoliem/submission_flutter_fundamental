@@ -1,6 +1,5 @@
 import 'package:dicoding_submission_flutter_fundamental/constant/name_router.dart';
 import 'package:dicoding_submission_flutter_fundamental/data/api/api_service.dart';
-import 'package:dicoding_submission_flutter_fundamental/data/model/restaurant.dart';
 import 'package:dicoding_submission_flutter_fundamental/presentation/page/detail_page.dart';
 import 'package:dicoding_submission_flutter_fundamental/presentation/page/home_page.dart';
 import 'package:dicoding_submission_flutter_fundamental/presentation/provider/restaurant_provider.dart';
@@ -33,10 +32,10 @@ class MainApp extends StatelessWidget {
         ),
         GoRoute(
           name: DETAIL_PAGE_ROUTE,
-          path: '/detail',
+          path: '/detail/:id',
           builder: (context, state) {
-            final params = state.extra as Restaurant;
-            return DetailPage(data: params);
+            final id = state.pathParameters['id']!;
+            return DetailPage(id: id);
           },
         ),
       ],
