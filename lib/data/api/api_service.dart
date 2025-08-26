@@ -4,7 +4,7 @@ import 'package:dicoding_submission_flutter_fundamental/data/model/restaurant_re
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static const String _baseUrl = 'https://restaurant-api.dicoding.dev';
+  static const _baseUrl = 'https://restaurant-api.dicoding.dev';
 
   Future<RestaurantResponse> getRestaurantList() async {
     final response = await http.get(Uri.parse('$_baseUrl/list'));

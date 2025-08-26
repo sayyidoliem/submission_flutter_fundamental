@@ -28,7 +28,7 @@ class MainApp extends StatelessWidget {
         GoRoute(
           name: HOME_PAGE_ROUTE,
           path: '/',
-          builder: (context, state) => const HomePage(),
+          builder: (context, state) => HomePage(),
         ),
         GoRoute(
           name: DETAIL_PAGE_ROUTE,
@@ -47,21 +47,21 @@ class MainApp extends StatelessWidget {
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.green,
+          brightness: Brightness.light,
+        ),
+        textTheme: GoogleFonts.merriweatherTextTheme(),
+      ),
+      darkTheme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.green,
           brightness: Brightness.dark,
         ),
-        textTheme: TextTheme(
-          displayLarge: const TextStyle(
-            fontSize: 72,
-            fontWeight: FontWeight.bold,
-          ),
-          titleLarge: GoogleFonts.oswald(
-            fontSize: 30,
-            fontStyle: FontStyle.italic,
-          ),
-          bodyMedium: GoogleFonts.merriweather(),
-          displaySmall: GoogleFonts.pacifico(),
+        textTheme: GoogleFonts.merriweatherTextTheme(
+          ThemeData(brightness: Brightness.dark).textTheme,
         ),
       ),
+      themeMode: ThemeMode.system,
     );
   }
 }

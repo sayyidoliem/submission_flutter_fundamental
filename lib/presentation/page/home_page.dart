@@ -1,9 +1,9 @@
+import 'package:dicoding_submission_flutter_fundamental/data/model/restaurant_response.dart';
+import 'package:dicoding_submission_flutter_fundamental/presentation/provider/network_state.dart';
+import 'package:dicoding_submission_flutter_fundamental/presentation/provider/restaurant_provider.dart';
+import 'package:dicoding_submission_flutter_fundamental/presentation/widget/list_tile_restaurant.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:dicoding_submission_flutter_fundamental/presentation/provider/restaurant_provider.dart';
-import 'package:dicoding_submission_flutter_fundamental/presentation/provider/network_state.dart';
-import 'package:dicoding_submission_flutter_fundamental/presentation/widget/list_tile_restaurant.dart';
-import 'package:dicoding_submission_flutter_fundamental/data/model/restaurant_response.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,40 +14,37 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final TextEditingController _searchController = TextEditingController();
-  bool _isSearching = false;
+
+  void _onSearch(BuildContext context, String query) {
+    final provider = context.read<RestaurantProvider>();
+    if (query.isEmpty) {
+      provider.setSearching(false);
+      provider.fetchRestaurants();
+    } else {
+      provider.setSearching(true);
+      provider.searchRestaurants(query);
+    }
+  }
+
+  void _clearSearch(BuildContext context) {
+    _searchController.clear();
+    _onSearch(context, '');
+  }
 
   @override
   void initState() {
     super.initState();
-    Future.microtask(
-      () => context.read<RestaurantProvider>().fetchRestaurants(),
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => context.read<RestaurantProvider>().fetchRestaurants(),
     );
-  }
-
-  void _onSearch(String query) {
-    if (query.isEmpty) {
-      setState(() => _isSearching = false);
-      context.read<RestaurantProvider>().fetchRestaurants();
-    } else {
-      setState(() => _isSearching = true);
-      context.read<RestaurantProvider>().searchRestaurants(query);
-    }
-  }
-
-  void _clearSearch() {
-    _searchController.clear();
-    _onSearch('');
   }
 
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<RestaurantProvider>();
-    final NetworkState<RestaurantResponse> state;
-    if (_isSearching) {
-      state = provider.searchState;
-    } else {
-      state = provider.listState;
-    }
+    final state = provider.isSearching
+        ? provider.searchState
+        : provider.listState;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Restaurant, recommend for you')),
@@ -57,22 +54,22 @@ class _HomePageState extends State<HomePage> {
           children: [
             SearchBar(
               controller: _searchController,
-              hintText: 'Seacrg restaurant...',
+              hintText: 'Search restaurant...',
               leading: IconButton(
                 icon: const Icon(Icons.search),
-                onPressed: () {},
+                onPressed: () => _onSearch(context, _searchController.text),
               ),
               trailing: [
                 if (_searchController.text.isNotEmpty)
                   IconButton(
                     icon: const Icon(Icons.clear),
-                    onPressed: () => _clearSearch(),
+                    onPressed: () => _clearSearch(context),
                   ),
               ],
-              onSubmitted: _onSearch,
+              onSubmitted: (value) => _onSearch(context, value),
               onChanged: (value) {
                 if (value.isEmpty) {
-                  _clearSearch();
+                  _clearSearch(context);
                 }
               },
             ),
@@ -89,7 +86,8 @@ class _HomePageState extends State<HomePage> {
                       Text(message),
                       const SizedBox(height: 12),
                       ElevatedButton(
-                        onPressed: () => _onSearch(_searchController.text),
+                        onPressed: () =>
+                            _onSearch(context, _searchController.text),
                         child: const Text('Try again'),
                       ),
                     ],
@@ -102,8 +100,7 @@ class _HomePageState extends State<HomePage> {
                         )
                       : ListView.separated(
                           itemCount: result.restaurants.length,
-                          separatorBuilder: (context, index) =>
-                              const Divider(height: 1),
+                          separatorBuilder: (_, _) => const Divider(height: 1),
                           itemBuilder: (context, index) => ListTileRestaurant(
                             dataResult: result.restaurants[index],
                           ),
@@ -115,5 +112,11 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+
+  @override
+  dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 }

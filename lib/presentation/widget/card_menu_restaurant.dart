@@ -4,7 +4,7 @@ import 'package:dicoding_submission_flutter_fundamental/data/model/food.dart';
 import 'package:dicoding_submission_flutter_fundamental/data/model/drink.dart';
 
 class MenusSection extends StatelessWidget {
-  final Menus? menus;
+  final Menu? menus;
   const MenusSection({super.key, required this.menus});
 
   @override
@@ -18,16 +18,18 @@ class MenusSection extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Text(
             'Menus',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
           ),
         ),
         const SizedBox(height: 12),
-         _Subheading(text: 'Foods :'),
+        _Subheading(text: 'Foods :'),
         foods.isEmpty
             ? const _EmptyText('Food list not avaible')
             : _ScrollableChips(labels: foods.map((f) => f.name).toList()),
         const SizedBox(height: 12),
-         _Subheading(text: 'Drinks :'),
+        _Subheading(text: 'Drinks :'),
         drinks.isEmpty
             ? const _EmptyText('Drink list not avaible')
             : _ScrollableChips(labels: drinks.map((d) => d.name).toList()),
@@ -70,7 +72,7 @@ class _ScrollableChips extends StatelessWidget {
   const _ScrollableChips({required this.labels});
 
   @override
-  Widget build(BuildContext context) {  
+  Widget build(BuildContext context) {
     return SizedBox(
       height: 44,
       child: ListView.separated(
@@ -84,9 +86,7 @@ class _ScrollableChips extends StatelessWidget {
           return Container(
             constraints: const BoxConstraints(minHeight: 36),
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-            ),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
             child: Center(
               child: Text(
                 text,

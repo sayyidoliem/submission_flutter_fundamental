@@ -20,8 +20,8 @@ class _DetailPageState extends State<DetailPage> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(
-      () => context.read<RestaurantProvider>().fetchRestaurantDetail(widget.id),
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => context.read<RestaurantProvider>().fetchRestaurantDetail(widget.id),
     );
   }
 
@@ -97,21 +97,18 @@ class _DetailPageState extends State<DetailPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Hero(
-                        tag: 'image',
-                        child: Image.network(
-                          'https://restaurant-api.dicoding.dev/images/large/${data.pictureId}',
-                          width: double.infinity,
-                          height: 200,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) =>
-                              const SizedBox(
-                                height: 220,
-                                child: Center(
-                                  child: Icon(Icons.broken_image, size: 40),
-                                ),
+                      Image.network(
+                        'https://restaurant-api.dicoding.dev/images/large/${data.pictureId}',
+                        width: double.infinity,
+                        height: 200,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) =>
+                            const SizedBox(
+                              height: 220,
+                              child: Center(
+                                child: Icon(Icons.broken_image, size: 40),
                               ),
-                        ),
+                            ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(16.0),
@@ -120,10 +117,8 @@ class _DetailPageState extends State<DetailPage> {
                           children: [
                             Text(
                               data.name,
-                              style: const TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: Theme.of(context).textTheme.headlineSmall
+                                  ?.copyWith(fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(height: 4),
                             Row(
@@ -136,7 +131,8 @@ class _DetailPageState extends State<DetailPage> {
                                 const SizedBox(width: 4),
                                 Text(
                                   data.city,
-                                  style: const TextStyle(color: Colors.grey),
+                                  style: Theme.of(context).textTheme.bodySmall
+                                      ?.copyWith(color: Colors.grey),
                                 ),
                               ],
                             ),
@@ -181,7 +177,7 @@ class _DetailPageState extends State<DetailPage> {
                             const SizedBox(height: 16),
                             Text(
                               data.description,
-                              style: const TextStyle(fontSize: 14),
+                              style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           ],
                         ),

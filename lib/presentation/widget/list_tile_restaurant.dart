@@ -10,33 +10,30 @@ class ListTileRestaurant extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Hero(
-      tag: 'image',
-      child: ListTile(
-        leading: SizedBox(
-          width: 60,
-          height: 60,
-          child: Image.network(
-            'https://restaurant-api.dicoding.dev/images/small/${dataResult.pictureId}',
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) =>
-                const Icon(Icons.broken_image_outlined),
-          ),
+    return ListTile(
+      leading: SizedBox(
+        width: 60,
+        height: 60,
+        child: Image.network(
+          'https://restaurant-api.dicoding.dev/images/small/${dataResult.pictureId}',
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) =>
+              const Icon(Icons.broken_image_outlined),
         ),
-        title: Text('${dataResult.name} | Kota ${dataResult.city}'),
-        subtitle: Text(
-          dataResult.description,
-          maxLines: 1,
-          overflow: TextOverflow.clip,
-        ),
-        trailing: Text(dataResult.rating.toString()),
-        onTap: () {
-          context.goNamed(
-            DETAIL_PAGE_ROUTE,
-            pathParameters: {'id': dataResult.id},
-          );
-        },
       ),
+      title: Text('${dataResult.name} | Kota ${dataResult.city}',style: Theme.of(context).textTheme.bodyMedium,),
+      subtitle: Text(
+        dataResult.description,
+        maxLines: 1,
+        overflow: TextOverflow.clip,
+      ),
+      trailing: Text(dataResult.rating.toString()),
+      onTap: () {
+        context.goNamed(
+          DETAIL_PAGE_ROUTE,
+          pathParameters: {'id': dataResult.id},
+        );
+      },
     );
   }
 }

@@ -1,16 +1,16 @@
 import 'package:dicoding_submission_flutter_fundamental/data/model/drink.dart';
 import 'package:dicoding_submission_flutter_fundamental/data/model/food.dart';
 
-class Menus {
+class Menu {
   List<Food>? foods;
   List<Drink>? drinks;
 
-  Menus({
+  Menu({
     this.foods,
     this.drinks,
   });
 
-  factory Menus.fromJson(Map<String, dynamic> json) => Menus(
+  factory Menu.fromJson(Map<String, dynamic> json) => Menu(
         foods: json["foods"] == null
             ? []
             : List<Food>.from(json["foods"]!.map((x) => Food.fromJson(x))),

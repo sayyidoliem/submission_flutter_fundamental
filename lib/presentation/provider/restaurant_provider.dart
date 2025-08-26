@@ -12,6 +12,15 @@ class RestaurantProvider extends ChangeNotifier {
   NetworkState<RestaurantResponse> detailState = const Idle();
   NetworkState<RestaurantResponse> searchState = const Idle();
 
+  bool _isSearching = false;
+
+  bool get isSearching => _isSearching;
+
+  void setSearching(bool value) {
+    _isSearching = value;
+    notifyListeners();
+  }
+
   Future<void> fetchRestaurants() async {
     listState = const Loading();
     notifyListeners();
