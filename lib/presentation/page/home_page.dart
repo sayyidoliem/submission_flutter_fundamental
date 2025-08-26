@@ -1,8 +1,10 @@
+import 'package:dicoding_submission_flutter_fundamental/constant/name_router.dart';
 import 'package:dicoding_submission_flutter_fundamental/data/model/restaurant_response.dart';
 import 'package:dicoding_submission_flutter_fundamental/presentation/provider/network_state.dart';
 import 'package:dicoding_submission_flutter_fundamental/presentation/provider/restaurant_provider.dart';
 import 'package:dicoding_submission_flutter_fundamental/presentation/widget/list_tile_restaurant.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -47,7 +49,15 @@ class _HomePageState extends State<HomePage> {
         : provider.listState;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Restaurant, recommend for you')),
+      appBar: AppBar(
+        title: const Text('Restaurant, recommend for you'),
+        actions: [
+          IconButton(
+            onPressed: () => context.go(SETTING_PAGE_ROUTE),
+            icon: Icon(Icons.settings),
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

@@ -21,7 +21,8 @@ class _DetailPageState extends State<DetailPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback(
-      (_) => context.read<RestaurantProvider>().fetchRestaurantDetail(widget.id),
+      (_) =>
+          context.read<RestaurantProvider>().fetchRestaurantDetail(widget.id),
     );
   }
 
@@ -178,6 +179,18 @@ class _DetailPageState extends State<DetailPage> {
                             Text(
                               data.description,
                               style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                            const SizedBox(height: 16),
+                            ElevatedButton(
+                              onPressed: () {},
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.favorite_outline),
+                                  const SizedBox(width: 5),
+                                  Text('Favorite this restaurant'),
+                                ],
+                              ),
                             ),
                           ],
                         ),

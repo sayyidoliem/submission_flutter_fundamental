@@ -2,7 +2,10 @@ import 'package:dicoding_submission_flutter_fundamental/constant/name_router.dar
 import 'package:dicoding_submission_flutter_fundamental/data/api/api_service.dart';
 import 'package:dicoding_submission_flutter_fundamental/presentation/page/detail_page.dart';
 import 'package:dicoding_submission_flutter_fundamental/presentation/page/home_page.dart';
+import 'package:dicoding_submission_flutter_fundamental/presentation/page/setting_page.dart';
+import 'package:dicoding_submission_flutter_fundamental/presentation/provider/reminder_provider.dart';
 import 'package:dicoding_submission_flutter_fundamental/presentation/provider/restaurant_provider.dart';
+import 'package:dicoding_submission_flutter_fundamental/presentation/provider/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,8 +13,12 @@ import 'package:provider/provider.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => RestaurantProvider(ApiService()),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => RestaurantProvider(ApiService())),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => ReminderProvider()),
+      ],
       child: MainApp(),
     ),
   );
@@ -22,6 +29,7 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     final router = GoRouter(
       initialLocation: '/',
       routes: <RouteBase>[
@@ -37,6 +45,11 @@ class MainApp extends StatelessWidget {
             final id = state.pathParameters['id']!;
             return DetailPage(id: id);
           },
+        ),
+        GoRoute(
+          name: SETTING_PAGE_ROUTE,
+          path: '/setting',
+          builder: (context, state) => SettingPage(),
         ),
       ],
     );
@@ -61,7 +74,7 @@ class MainApp extends StatelessWidget {
           ThemeData(brightness: Brightness.dark).textTheme,
         ),
       ),
-      themeMode: ThemeMode.system,
+      themeMode: themeProvider.themeMode,
     );
   }
 }
