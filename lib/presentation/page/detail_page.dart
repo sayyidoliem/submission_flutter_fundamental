@@ -1,6 +1,7 @@
 import 'package:dicoding_submission_flutter_fundamental/constant/name_router.dart';
 import 'package:dicoding_submission_flutter_fundamental/data/model/restaurant.dart';
 import 'package:dicoding_submission_flutter_fundamental/data/model/restaurant_response.dart';
+import 'package:dicoding_submission_flutter_fundamental/presentation/provider/bookmark_provider.dart';
 import 'package:dicoding_submission_flutter_fundamental/presentation/provider/network_state.dart';
 import 'package:dicoding_submission_flutter_fundamental/presentation/provider/restaurant_provider.dart';
 import 'package:dicoding_submission_flutter_fundamental/presentation/widget/card_menu_restaurant.dart';
@@ -181,16 +182,60 @@ class _DetailPageState extends State<DetailPage> {
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
                             const SizedBox(height: 16),
-                            ElevatedButton(
-                              onPressed: () {},
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.favorite_outline),
-                                  const SizedBox(width: 5),
-                                  Text('Favorite this restaurant'),
-                                ],
-                              ),
+                            Consumer<BookmarkProvider>(
+                              builder: (context, bookmarkProvider, _) {
+                                return FutureBuilder<bool>(
+                                  future: bookmarkProvider.isBookmarked(
+                                    data!.id,
+                                  ),
+                                  builder: (context, snapshot) {
+                                    final isBookmarked = snapshot.data ?? false;
+
+                                    return ElevatedButton.icon(
+                                      onPressed: () async {
+                                        if (isBookmarked) {
+                                          await bookmarkProvider.removeBookmark(
+                                            data!.id,
+                                          );
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                'Dihapus dari favorit',
+                                              ),
+                                            ),
+                                          );
+                                        } else {
+                                          await bookmarkProvider.addBookmark(
+                                            data!,
+                                          );
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                'Ditambahkan ke favorit',
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      icon: Icon(
+                                        isBookmarked
+                                            ? Icons.favorite
+                                            : Icons.favorite_border,
+                                        color: isBookmarked ? Colors.red : null,
+                                      ),
+                                      label: Text(
+                                        isBookmarked
+                                            ? 'Hapus dari favorit'
+                                            : 'Favoritkan restoran ini',
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
                             ),
                           ],
                         ),

@@ -1,8 +1,10 @@
 import 'package:dicoding_submission_flutter_fundamental/constant/name_router.dart';
 import 'package:dicoding_submission_flutter_fundamental/data/api/api_service.dart';
+import 'package:dicoding_submission_flutter_fundamental/presentation/page/bookmark_page.dart';
 import 'package:dicoding_submission_flutter_fundamental/presentation/page/detail_page.dart';
 import 'package:dicoding_submission_flutter_fundamental/presentation/page/home_page.dart';
 import 'package:dicoding_submission_flutter_fundamental/presentation/page/setting_page.dart';
+import 'package:dicoding_submission_flutter_fundamental/presentation/provider/bookmark_provider.dart';
 import 'package:dicoding_submission_flutter_fundamental/presentation/provider/reminder_provider.dart';
 import 'package:dicoding_submission_flutter_fundamental/presentation/provider/restaurant_provider.dart';
 import 'package:dicoding_submission_flutter_fundamental/presentation/provider/theme_provider.dart';
@@ -12,12 +14,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 void main() {
+ 
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => RestaurantProvider(ApiService())),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => ReminderProvider()),
+        ChangeNotifierProvider(create: (_) => BookmarkProvider()),
       ],
       child: MainApp(),
     ),
@@ -45,6 +49,11 @@ class MainApp extends StatelessWidget {
             final id = state.pathParameters['id']!;
             return DetailPage(id: id);
           },
+        ),
+        GoRoute(
+          name: BOOKMARK_PAGE_ROUTE,
+          path: '/bookmark',
+          builder: (context, state) => BookmarkPage(),
         ),
         GoRoute(
           name: SETTING_PAGE_ROUTE,

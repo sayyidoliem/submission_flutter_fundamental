@@ -53,6 +53,10 @@ class _HomePageState extends State<HomePage> {
         title: const Text('Restaurant, recommend for you'),
         actions: [
           IconButton(
+            onPressed: () => context.go(BOOKMARK_PAGE_ROUTE),
+            icon: Icon(Icons.bookmark),
+          ),
+          IconButton(
             onPressed: () => context.go(SETTING_PAGE_ROUTE),
             icon: Icon(Icons.settings),
           ),
