@@ -1,4 +1,3 @@
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemePreference {
@@ -14,7 +13,6 @@ class ThemePreference {
     return prefs.getBool(_key) ?? false;
   }
 }
-
 
 class ReminderPreferences {
   static const _key = 'dailyReminder';

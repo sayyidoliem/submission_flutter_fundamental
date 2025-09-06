@@ -190,7 +190,6 @@ class _DetailPageState extends State<DetailPage> {
                                   ),
                                   builder: (context, snapshot) {
                                     final isBookmarked = snapshot.data ?? false;
-
                                     return ElevatedButton.icon(
                                       onPressed: () async {
                                         if (isBookmarked) {
@@ -202,7 +201,7 @@ class _DetailPageState extends State<DetailPage> {
                                           ).showSnackBar(
                                             const SnackBar(
                                               content: Text(
-                                                'Dihapus dari favorit',
+                                                'Remove from favorite',
                                               ),
                                             ),
                                           );
@@ -214,9 +213,7 @@ class _DetailPageState extends State<DetailPage> {
                                             context,
                                           ).showSnackBar(
                                             const SnackBar(
-                                              content: Text(
-                                                'Ditambahkan ke favorit',
-                                              ),
+                                              content: Text('Add to favorite'),
                                             ),
                                           );
                                         }
@@ -229,8 +226,8 @@ class _DetailPageState extends State<DetailPage> {
                                       ),
                                       label: Text(
                                         isBookmarked
-                                            ? 'Hapus dari favorit'
-                                            : 'Favoritkan restoran ini',
+                                            ? 'Remove from favorite'
+                                            : 'Favorite this restaurant',
                                       ),
                                     );
                                   },

@@ -12,15 +12,16 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 void main() {
- 
+  tz.initializeTimeZones();
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => RestaurantProvider(ApiService())),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
-        ChangeNotifierProvider(create: (_) => ReminderProvider()),
+        ChangeNotifierProvider(create: (_) => ReminderProvider(ApiService())),
         ChangeNotifierProvider(create: (_) => BookmarkProvider()),
       ],
       child: MainApp(),

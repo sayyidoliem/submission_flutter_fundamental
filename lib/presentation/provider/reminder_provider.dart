@@ -1,3 +1,5 @@
+import 'dart:math';
+import 'package:dicoding_submission_flutter_fundamental/data/api/api_service.dart';
 import 'package:dicoding_submission_flutter_fundamental/utils/share_preference.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -8,15 +10,19 @@ class ReminderProvider with ChangeNotifier {
   final ReminderPreferences _preferences = ReminderPreferences();
   final FlutterLocalNotificationsPlugin _notificationsPlugin =
       FlutterLocalNotificationsPlugin();
+  final ApiService _apiService;
 
   bool get isReminderEnabled => _isReminderEnabled;
 
-  ReminderProvider() {
+  FlutterLocalNotificationsPlugin get notificationsPlugin =>
+      _notificationsPlugin;
+
+  ReminderProvider(this._apiService) {
     _initializeNotification();
     _loadReminder();
   }
 
-  void _initializeNotification() async {
+  Future<void> _initializeNotification() async {
     const androidSettings = AndroidInitializationSettings(
       '@mipmap/ic_launcher',
     );
@@ -26,31 +32,34 @@ class ReminderProvider with ChangeNotifier {
     await _notificationsPlugin.initialize(initializationSettings);
   }
 
-  void toggleReminder(bool isEnabled) async {
+  Future<void> toggleReminder(bool isEnabled) async {
     _isReminderEnabled = isEnabled;
     notifyListeners();
     await _preferences.setReminder(isEnabled);
 
     if (isEnabled) {
-      _scheduleDailyReminder();
+      await _scheduleDailyReminder();
     } else {
-      _notificationsPlugin.cancel(0);
+      await _notificationsPlugin.cancel(0);
     }
   }
 
-  void _loadReminder() async {
+  Future<void> _loadReminder() async {
     _isReminderEnabled = await _preferences.getReminder();
     notifyListeners();
 
     if (_isReminderEnabled) {
-      _scheduleDailyReminder();
+      await _scheduleDailyReminder();
     }
   }
 
-  void _scheduleDailyReminder() async {
+  Future<void> _scheduleDailyReminder() async {
+    final restaurantName = await _getRandomRestaurantName();
+
     const androidDetails = AndroidNotificationDetails(
       'daily_reminder_channel',
       'Daily Reminder',
+      channelDescription: 'Reminder for lucnh',
       importance: Importance.max,
       priority: Priority.high,
     );
@@ -59,8 +68,8 @@ class ReminderProvider with ChangeNotifier {
 
     await _notificationsPlugin.zonedSchedule(
       0,
-      'Waktunya Makan Siang!',
-      'Jangan lupa makan siang ya 🍽️',
+      'Time to launch!',
+      'Try to eat at: $restaurantName 🍽️',
       _nextInstanceOf11AM(),
       notificationDetails,
       matchDateTimeComponents: DateTimeComponents.time,
@@ -81,5 +90,17 @@ class ReminderProvider with ChangeNotifier {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
     }
     return scheduledDate;
+  }
+
+  Future<String> _getRandomRestaurantName() async {
+    try {
+      final response = await _apiService.getRestaurantList();
+      final restaurants = response.restaurants;
+      if (restaurants.isNotEmpty) {
+        final random = restaurants[Random().nextInt(restaurants.length)];
+        return random.name;
+      }
+    } catch (_) {}
+    return 'Restoran favoritmu';
   }
 }
