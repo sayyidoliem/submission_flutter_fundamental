@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:dicoding_submission_flutter_fundamental/data/api/api_service.dart';
 import 'package:dicoding_submission_flutter_fundamental/utils/share_preference.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
@@ -26,16 +27,74 @@ class ReminderProvider with ChangeNotifier {
     const androidSettings = AndroidInitializationSettings(
       '@mipmap/ic_launcher',
     );
+    const iOSSettings = DarwinInitializationSettings(
+      requestAlertPermission: false,
+      requestBadgePermission: false,
+      requestSoundPermission: false,
+    );
     const initializationSettings = InitializationSettings(
       android: androidSettings,
+      iOS: iOSSettings,
     );
     await _notificationsPlugin.initialize(initializationSettings);
   }
 
+  Future<bool> _isAndroidPermissionGranted() async {
+    return await _notificationsPlugin
+            .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin
+            >()
+            ?.areNotificationsEnabled() ??
+        false;
+  }
+
+  Future<bool> _requestAndroidNotificationsPermission() async {
+    return await _notificationsPlugin
+            .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin
+            >()
+            ?.requestNotificationsPermission() ??
+        false;
+  }
+
+  Future<bool?> requestPermissions() async {
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      final iOSImplementation = _notificationsPlugin
+          .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin
+          >();
+      return await iOSImplementation?.requestPermissions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+    } else if (defaultTargetPlatform == TargetPlatform.android) {
+      final notificationEnabled = await _isAndroidPermissionGranted();
+      if (!notificationEnabled) {
+        final requestNotificationsPermission =
+            await _requestAndroidNotificationsPermission();
+        return requestNotificationsPermission;
+      }
+      return notificationEnabled;
+    } else {
+      return false;
+    }
+  }
+
   Future<void> toggleReminder(bool isEnabled) async {
+    if (isEnabled) {
+      final granted = await requestPermissions() ?? false;
+      if (!granted) {
+        _isReminderEnabled = false;
+        await _preferences.setReminder(false);
+        notifyListeners();
+        return;
+      }
+    }
+
     _isReminderEnabled = isEnabled;
-    notifyListeners();
     await _preferences.setReminder(isEnabled);
+    notifyListeners();
 
     if (isEnabled) {
       await _scheduleDailyReminder();
@@ -46,11 +105,18 @@ class ReminderProvider with ChangeNotifier {
 
   Future<void> _loadReminder() async {
     _isReminderEnabled = await _preferences.getReminder();
-    notifyListeners();
 
     if (_isReminderEnabled) {
-      await _scheduleDailyReminder();
+      final granted = await requestPermissions() ?? false;
+      if (!granted) {
+        _isReminderEnabled = false;
+        await _preferences.setReminder(false);
+      } else {
+        await _scheduleDailyReminder();
+      }
     }
+
+    notifyListeners();
   }
 
   Future<void> _scheduleDailyReminder() async {
