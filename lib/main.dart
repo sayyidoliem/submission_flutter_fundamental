@@ -17,6 +17,7 @@ import 'package:provider/provider.dart';
 import 'package:workmanager/workmanager.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await configureLocalTimeZone();
   await Workmanager().initialize(callbackDispatcher);
   runApp(
