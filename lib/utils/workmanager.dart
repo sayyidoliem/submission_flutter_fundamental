@@ -2,6 +2,7 @@ import 'package:dicoding_submission_flutter_fundamental/data/api/api_service.dar
 import 'package:workmanager/workmanager.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+@pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
     final notifications = FlutterLocalNotificationsPlugin();

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:dicoding_submission_flutter_fundamental/constant/name_router.dart';
 import 'package:dicoding_submission_flutter_fundamental/data/api/api_service.dart';
 import 'package:dicoding_submission_flutter_fundamental/presentation/page/bookmark_page.dart';
@@ -18,6 +20,7 @@ import 'package:workmanager/workmanager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  DartPluginRegistrant.ensureInitialized();
   await configureLocalTimeZone();
   await Workmanager().initialize(callbackDispatcher);
   runApp(
