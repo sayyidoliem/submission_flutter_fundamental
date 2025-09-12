@@ -18,7 +18,7 @@ class BookmarkPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Bookmark'),
         leading: IconButton(
-          onPressed: () => context.go(HOME_PAGE_ROUTE),
+          onPressed: () => context.go(homePageRoute),
           icon: const Icon(Icons.arrow_back),
         ),
       ),
@@ -33,7 +33,10 @@ class BookmarkPage extends StatelessWidget {
                 separatorBuilder: (_, __) => const Divider(height: 1),
                 itemBuilder: (context, index) {
                   final restaurant = bookmarks[index];
-                  return ListTileRestaurant(dataResult: restaurant);
+                  return ListTileRestaurant(
+                    dataResult: restaurant,
+                    route: detailPageRoute,
+                  );
                 },
               ),
       ),

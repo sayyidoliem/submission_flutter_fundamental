@@ -18,7 +18,7 @@ class SettingPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Settings'),
         leading: IconButton(
-          onPressed: () => context.go(HOME_PAGE_ROUTE),
+          onPressed: () => context.go(homePageRoute),
           icon: const Icon(Icons.arrow_back),
         ),
       ),
@@ -36,7 +36,9 @@ class SettingPage extends StatelessWidget {
   Widget _buildThemeSwitch(BuildContext context, ThemeProvider provider) {
     return SwitchListTile(
       title: const Text('Dark Theme'),
-      subtitle: const Text('Enable dark mode for a more comfortable viewing experience at night.'),
+      subtitle: const Text(
+        'Enable dark mode for a more comfortable viewing experience at night.',
+      ),
       value: provider.themeMode == ThemeMode.dark,
       onChanged: (value) => provider.toggleTheme(value),
       secondary: const Icon(Icons.brightness_6),
@@ -46,7 +48,9 @@ class SettingPage extends StatelessWidget {
   Widget _buildReminderSwitch(BuildContext context, ReminderProvider provider) {
     return SwitchListTile(
       title: const Text('Daily Reminder'),
-      subtitle: const Text('Receive daily lunch notifications at 11:00 a.m. with restaurant recommendations.'),
+      subtitle: const Text(
+        'Receive daily lunch notifications at 11:00 a.m. with restaurant recommendations.',
+      ),
       value: provider.isReminderEnabled,
       onChanged: (value) async {
         await provider.toggleReminder(value);
@@ -71,7 +75,7 @@ class SettingPage extends StatelessWidget {
     const notificationDetails = NotificationDetails(android: androidDetails);
 
     await provider.notificationsPlugin.show(
-      999, 
+      999,
       'Active Preview Reminder',
       'Lunch notifications will appear every day at 11:00 a.m',
       notificationDetails,

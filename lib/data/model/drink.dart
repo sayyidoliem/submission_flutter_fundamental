@@ -1,15 +1,10 @@
 class Drink {
-    final String name;
+  final String name;
 
-    Drink({
-        required this.name,
-    });
+  Drink({required this.name});
 
-    factory Drink.fromJson(Map<String, dynamic> json) => Drink(
-        name: json["name"],
-    );
+  factory Drink.fromJson(Map<String, dynamic> json) =>
+      Drink(name: json["name"]);
 
-    Map<String, dynamic> toJson() => {
-        "name": name,
-    };
+  Map<String, dynamic> toJson() => {"name": name};
 }

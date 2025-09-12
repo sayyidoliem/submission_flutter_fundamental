@@ -8,14 +8,17 @@ import 'package:dicoding_submission_flutter_fundamental/presentation/provider/bo
 import 'package:dicoding_submission_flutter_fundamental/presentation/provider/reminder_provider.dart';
 import 'package:dicoding_submission_flutter_fundamental/presentation/provider/restaurant_provider.dart';
 import 'package:dicoding_submission_flutter_fundamental/presentation/provider/theme_provider.dart';
+import 'package:dicoding_submission_flutter_fundamental/utils/local_time_config.dart';
+import 'package:dicoding_submission_flutter_fundamental/utils/workmanager.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:timezone/data/latest.dart' as tz;
+import 'package:workmanager/workmanager.dart';
 
-void main() {
-  tz.initializeTimeZones();
+void main() async {
+  await configureLocalTimeZone();
+  await Workmanager().initialize(callbackDispatcher);
   runApp(
     MultiProvider(
       providers: [
@@ -39,12 +42,12 @@ class MainApp extends StatelessWidget {
       initialLocation: '/',
       routes: <RouteBase>[
         GoRoute(
-          name: HOME_PAGE_ROUTE,
+          name: homePageRoute,
           path: '/',
           builder: (context, state) => HomePage(),
         ),
         GoRoute(
-          name: DETAIL_PAGE_ROUTE,
+          name: detailPageRoute,
           path: '/detail/:id',
           builder: (context, state) {
             final id = state.pathParameters['id']!;
@@ -52,12 +55,12 @@ class MainApp extends StatelessWidget {
           },
         ),
         GoRoute(
-          name: BOOKMARK_PAGE_ROUTE,
+          name: bookmarkPageRoute,
           path: '/bookmark',
           builder: (context, state) => BookmarkPage(),
         ),
         GoRoute(
-          name: SETTING_PAGE_ROUTE,
+          name: settingPageRoute,
           path: '/setting',
           builder: (context, state) => SettingPage(),
         ),

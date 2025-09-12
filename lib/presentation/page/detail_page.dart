@@ -70,7 +70,7 @@ class _DetailPageState extends State<DetailPage> {
         return Scaffold(
           appBar: AppBar(
             leading: IconButton(
-              onPressed: () => context.go(HOME_PAGE_ROUTE),
+              onPressed: () => context.go(homePageRoute),
               icon: const Icon(Icons.arrow_back),
             ),
             title: Text(data?.name ?? 'Detail Restaurant'),

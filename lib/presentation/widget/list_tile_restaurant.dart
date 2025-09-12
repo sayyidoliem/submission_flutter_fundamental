@@ -1,12 +1,16 @@
-import 'package:dicoding_submission_flutter_fundamental/constant/name_router.dart';
 import 'package:dicoding_submission_flutter_fundamental/data/model/restaurant.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class ListTileRestaurant extends StatelessWidget {
-  const ListTileRestaurant({super.key, required this.dataResult});
+  const ListTileRestaurant({
+    super.key,
+    required this.dataResult,
+    required this.route,
+  });
 
   final Restaurant dataResult;
+  final String route;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +25,10 @@ class ListTileRestaurant extends StatelessWidget {
               const Icon(Icons.broken_image_outlined),
         ),
       ),
-      title: Text('${dataResult.name} | Kota ${dataResult.city}',style: Theme.of(context).textTheme.bodyMedium,),
+      title: Text(
+        '${dataResult.name} | Kota ${dataResult.city}',
+        style: Theme.of(context).textTheme.bodyMedium,
+      ),
       subtitle: Text(
         dataResult.description,
         maxLines: 1,
@@ -29,10 +36,7 @@ class ListTileRestaurant extends StatelessWidget {
       ),
       trailing: Text(dataResult.rating.toString()),
       onTap: () {
-        context.goNamed(
-          DETAIL_PAGE_ROUTE,
-          pathParameters: {'id': dataResult.id},
-        );
+        context.goNamed(route, pathParameters: {'id': dataResult.id});
       },
     );
   }

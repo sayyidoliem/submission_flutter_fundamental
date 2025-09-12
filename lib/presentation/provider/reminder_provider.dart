@@ -2,12 +2,13 @@ import 'dart:math';
 import 'package:dicoding_submission_flutter_fundamental/data/api/api_service.dart';
 import 'package:dicoding_submission_flutter_fundamental/utils/share_preference.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
+import 'package:workmanager/workmanager.dart';
 
 class ReminderProvider with ChangeNotifier {
   bool _isReminderEnabled = false;
+  static const _workname = 'daily_restaurant';
   final ReminderPreferences _preferences = ReminderPreferences();
   final FlutterLocalNotificationsPlugin _notificationsPlugin =
       FlutterLocalNotificationsPlugin();
@@ -97,9 +98,10 @@ class ReminderProvider with ChangeNotifier {
     notifyListeners();
 
     if (isEnabled) {
-      await _scheduleDailyReminder();
+      await _registerDailyWorkAt11();
     } else {
       await _notificationsPlugin.cancel(0);
+      await Workmanager().cancelByUniqueName(_workname);
     }
   }
 
@@ -143,6 +145,20 @@ class ReminderProvider with ChangeNotifier {
     );
   }
 
+  Future<void> _registerDailyWorkAt11() async {
+    final delay = _delayUntilNext11();
+    await Workmanager().registerPeriodicTask(
+      _workname,
+      'dailyRestaurantTask',
+      frequency: const Duration(days: 1),
+      initialDelay: delay,
+      backoffPolicy: BackoffPolicy.linear,
+      backoffPolicyDelay: const Duration(minutes: 5),
+      constraints: Constraints(networkType: NetworkType.connected),
+      existingWorkPolicy: ExistingPeriodicWorkPolicy.replace,
+    );
+  }
+
   tz.TZDateTime _nextInstanceOf11AM() {
     final now = tz.TZDateTime.now(tz.local);
     var scheduledDate = tz.TZDateTime(
@@ -156,6 +172,13 @@ class ReminderProvider with ChangeNotifier {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
     }
     return scheduledDate;
+  }
+
+  Duration _delayUntilNext11() {
+    final now = DateTime.now();
+    var target = DateTime(now.year, now.month, now.day, 11);
+    if (target.isBefore(now)) target = target.add(const Duration(days: 1));
+    return target.difference(now);
   }
 
   Future<String> _getRandomRestaurantName() async {

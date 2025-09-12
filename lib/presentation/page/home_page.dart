@@ -53,11 +53,11 @@ class _HomePageState extends State<HomePage> {
         title: const Text('Restaurant, recommend for you'),
         actions: [
           IconButton(
-            onPressed: () => context.go(BOOKMARK_PAGE_ROUTE),
+            onPressed: () => context.go(bookmarkPageRoute),
             icon: Icon(Icons.bookmark),
           ),
           IconButton(
-            onPressed: () => context.go(SETTING_PAGE_ROUTE),
+            onPressed: () => context.go(settingPageRoute),
             icon: Icon(Icons.settings),
           ),
         ],
@@ -117,6 +117,7 @@ class _HomePageState extends State<HomePage> {
                           separatorBuilder: (_, _) => const Divider(height: 1),
                           itemBuilder: (context, index) => ListTileRestaurant(
                             dataResult: result.restaurants[index],
+                            route: detailPageRoute,
                           ),
                         ),
                 _ => const SizedBox.shrink(),
