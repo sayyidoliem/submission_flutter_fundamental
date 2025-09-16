@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dicoding_submission_flutter_fundamental/data/api/api_service.dart';
 import 'package:dicoding_submission_flutter_fundamental/data/model/restaurant_response.dart';
-import 'package:dicoding_submission_flutter_fundamental/presentation/provider/network_state.dart';
+import 'package:dicoding_submission_flutter_fundamental/constant/network_state.dart';
 
 class RestaurantProvider extends ChangeNotifier {
   final ApiService _api;

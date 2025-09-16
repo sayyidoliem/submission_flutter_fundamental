@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:dicoding_submission_flutter_fundamental/presentation/provider/restaurant_provider.dart';
 import 'package:dicoding_submission_flutter_fundamental/data/api/api_service.dart';
-import 'package:dicoding_submission_flutter_fundamental/presentation/provider/network_state.dart';
+import 'package:dicoding_submission_flutter_fundamental/constant/network_state.dart';
 
 class MockApiService extends Mock implements ApiService {}
 

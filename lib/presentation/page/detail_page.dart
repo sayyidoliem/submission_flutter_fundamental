@@ -2,7 +2,7 @@ import 'package:dicoding_submission_flutter_fundamental/constant/name_router.dar
 import 'package:dicoding_submission_flutter_fundamental/data/model/restaurant.dart';
 import 'package:dicoding_submission_flutter_fundamental/data/model/restaurant_response.dart';
 import 'package:dicoding_submission_flutter_fundamental/presentation/provider/bookmark_provider.dart';
-import 'package:dicoding_submission_flutter_fundamental/presentation/provider/network_state.dart';
+import 'package:dicoding_submission_flutter_fundamental/constant/network_state.dart';
 import 'package:dicoding_submission_flutter_fundamental/presentation/provider/restaurant_provider.dart';
 import 'package:dicoding_submission_flutter_fundamental/presentation/widget/card_menu_restaurant.dart';
 import 'package:flutter/material.dart';
